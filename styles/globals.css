@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .form-label {
+    @apply block text-gray-700 text-sm font-bold mb-2;
+  }
+  .form-input {
+    @apply shadow-sm appearance-none border w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-1 h-10;
+  }
+  .custom-hover {
+    @apply transition duration-300 ease-in-out transform cursor-pointer;
+  }
+}
