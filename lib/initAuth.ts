@@ -1,8 +1,6 @@
 import { init } from 'next-firebase-auth';
 
 const initAuth = () => {
-  const { privateKey } = JSON.parse(process.env.FIREBASE_PRIVATE_KEY || '{ privateKey: null }');
-
   init({
     authPageURL: '/auth',
     appPageURL: '/',
@@ -15,7 +13,9 @@ const initAuth = () => {
         projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
         clientEmail: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_EMAIL,
         // The private key must not be accesssible on the client side.
-        privateKey
+        privateKey: process.env.FIREBASE_PRIVATE_KEY
+          ? JSON.parse(process.env.FIREBASE_PRIVATE_KEY)
+          : undefined
       },
       databaseURL: 'https://dev-gohaba-auth.firebaseio.com'
     },
