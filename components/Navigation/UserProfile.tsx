@@ -23,7 +23,7 @@ const UserProfile: FC = () => {
       </div>
 
       {/* Display on desktop only */}
-      <Popover className="hidden md:relative">
+      <Popover className="hidden md:block relative">
         <Popover.Button>
           <div className="flex items-center h-full">
             <ProfileImage photoURL={photoURL} />
