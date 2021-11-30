@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useAuthUser } from 'next-firebase-auth';
 import { FC } from 'react';
 import { RiBusFill } from 'react-icons/ri';
 import { TiTicket } from 'react-icons/ti';
@@ -9,9 +10,12 @@ import { EVENTS, TOURS } from '@/components/Navigation/paths';
 import SignInButton from '@/components/Navigation/SignInButton';
 
 import SignInModal from './SignInModal';
+import UserProfile from './UserProfile';
 
 const TopNav: FC = () => {
   const router = useRouter();
+
+  const { email } = useAuthUser();
 
   const handleRedirect = (path: string) => {
     router.push(path);
@@ -20,9 +24,9 @@ const TopNav: FC = () => {
   return (
     <>
       <div className="shadow dark:bg-gray-800">
-        <div className="flex justify-between items-center">
+        <div className="container mx-auto flex justify-between items-center">
           <Link href="/">
-            <a className="px-0 md:px-6">Ficlin</a>
+            <a className="px-0">goHaba</a>
           </Link>
 
           <div className="hidden md:flex">
@@ -39,9 +43,7 @@ const TopNav: FC = () => {
               onClick={() => handleRedirect(EVENTS)}
             />
           </div>
-          <div className="hidden md:flex">
-            <SignInButton />
-          </div>
+          <div className="hidden md:flex">{email ? <UserProfile /> : <SignInButton />}</div>
         </div>
       </div>
       <SignInModal />

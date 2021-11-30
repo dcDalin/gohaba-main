@@ -1,3 +1,11 @@
+import {
+  browserSessionPersistence,
+  getAdditionalUserInfo,
+  getAuth,
+  GoogleAuthProvider,
+  setPersistence,
+  signInWithPopup
+} from 'firebase/auth';
 import { FC } from 'react';
 import { FaFacebookSquare } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
@@ -14,6 +22,28 @@ const SignInModal: FC = () => {
   const {
     authModals: { isSignInOpen }
   } = useSelector((state: AppState) => state);
+
+  const handleSignInWithGoogle = async () => {
+    try {
+      const auth = getAuth();
+      await setPersistence(auth, browserSessionPersistence);
+
+      const provider = new GoogleAuthProvider();
+      const credential = await signInWithPopup(auth, provider);
+
+      const { user } = credential;
+      const { profile } = getAdditionalUserInfo(credential);
+      const google = profile as any;
+
+      console.log('USER IS: ***************: ', user);
+      // close auth modal
+      dispatch(closeAuthModals());
+      // show success toast
+      return { user, google };
+    } catch (err) {
+      console.log('Err is: ', err);
+    }
+  };
 
   return (
     <Modal
@@ -36,9 +66,12 @@ const SignInModal: FC = () => {
               <div className="w-full md:w-10 border border-white h-full flex items-center">
                 <FcGoogle className="m-auto" />
               </div>
-              <div className="hidden md:block w-full text-center text-sm text-gray-600 group-hover:text-gray-800">
+              <button
+                className="hidden md:block w-full text-center text-sm text-gray-600 group-hover:text-gray-800"
+                onClick={() => handleSignInWithGoogle()}
+              >
                 Continue with Google
-              </div>
+              </button>
             </div>
           </div>
           <SignInForm />

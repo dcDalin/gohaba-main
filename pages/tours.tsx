@@ -2,6 +2,7 @@ import type { NextPage } from 'next';
 import { NextSeo } from 'next-seo';
 
 import AppLayout from '@/components/Layouts/AppLayout';
+import { withUser } from '@/lib/withAuth';
 
 const Tours: NextPage = () => {
   return (
@@ -14,4 +15,4 @@ const Tours: NextPage = () => {
   );
 };
 
-export default Tours;
+export default withUser(Tours);

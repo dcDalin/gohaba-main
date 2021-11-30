@@ -8,8 +8,11 @@ import withApollo from 'next-with-apollo';
 import NProgress from 'nprogress';
 import { useEffect } from 'react';
 
+import initAuth from '@/lib/initAuth';
 import { wrapper } from '@/redux/store';
 import { isDev, isSSR } from '@/utils/environment';
+
+initAuth();
 
 const MyApp = ({ Component, pageProps, apollo }) => {
   useEffect(() => {

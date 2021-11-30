@@ -1,8 +1,8 @@
-import withAuth from 'lib/withAuth';
 import type { NextPage } from 'next';
 import { NextSeo } from 'next-seo';
 
 import AppLayout from '@/components/Layouts/AppLayout';
+import { withUser } from '@/lib/withAuth';
 
 const Home: NextPage = () => {
   return (
@@ -15,4 +15,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default withAuth(Home);
+export default withUser(Home);

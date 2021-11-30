@@ -20,7 +20,8 @@
       "@/forms/*": ["forms/*"],
       "@/utils/*": ["utils/*"],
       "@/theme/*": ["theme/*"],
-      "@/graphql/*": ["graphql/*"]
+      "@/graphql/*": ["graphql/*"],
+      "@/lib/*": ["lib/*"]
     },
     "incremental": true
   },
