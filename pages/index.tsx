@@ -1,18 +1,18 @@
 import type { NextPage } from 'next';
 import { NextSeo } from 'next-seo';
 
+import Books from '@/components/Books';
 import AppLayout from '@/components/Layouts/AppLayout';
-import { withUser } from '@/lib/withAuth';
 
 const Home: NextPage = () => {
   return (
     <>
       <NextSeo title="Ficlin | Home" description="A short description goes here." />
       <AppLayout>
-        <p className="text-4xl">hello</p>
+        <Books />
       </AppLayout>
     </>
   );
 };
 
-export default withUser(Home);
+export default Home;

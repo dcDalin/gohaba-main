@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import { useAuthUser } from 'next-firebase-auth';
 import { FC } from 'react';
 import { RiBusFill } from 'react-icons/ri';
 import { TiTicket } from 'react-icons/ti';
@@ -13,7 +12,7 @@ import UserProfile from './UserProfile';
 const BottomNav: FC = () => {
   const router = useRouter();
 
-  const { email } = useAuthUser();
+  const email = false;
 
   const handleRedirect = (path: string) => {
     router.push(path);

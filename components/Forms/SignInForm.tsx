@@ -12,8 +12,6 @@ const SignInForm: FC = () => {
     console.log({ data });
   };
 
-  console.log('Errors is: ', errors);
-
   return (
     <div className="w-full">
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
