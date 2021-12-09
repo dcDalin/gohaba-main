@@ -1,8 +1,11 @@
 import { Popover, Transition } from '@headlessui/react';
 import Image from 'next/image';
-import { useAuthUser } from 'next-firebase-auth';
 import React, { FC, Fragment } from 'react';
 import { BsChevronDown } from 'react-icons/bs';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { userSignOut } from '@/redux/Authentication/authenticationSlice';
+import { AppState } from '@/redux/store';
 
 interface IProfileImageProps {
   photoURL: string;
@@ -13,7 +16,15 @@ const ProfileImage: FC<IProfileImageProps> = ({ photoURL }) => (
   </div>
 );
 const UserProfile: FC = () => {
-  const { displayName, photoURL, email, signOut } = useAuthUser();
+  const dispatch = useDispatch();
+
+  const {
+    auth: {
+      user: { photoURL, displayName }
+    }
+  } = useSelector((state: AppState) => state);
+
+  console.log('User is: ', displayName);
 
   return (
     <>
@@ -23,11 +34,11 @@ const UserProfile: FC = () => {
       </div>
 
       {/* Display on desktop only */}
-      <Popover className="hidden md:relative">
+      <Popover className="hidden md:block relative">
         <Popover.Button>
           <div className="flex items-center h-full">
             <ProfileImage photoURL={photoURL} />
-            <div className="px-2 hover:text-bold">{email ? displayName : 'unknown'}</div>
+            <div className="px-2 hover:text-bold">{displayName}</div>
             <BsChevronDown />
           </div>
         </Popover.Button>
@@ -42,7 +53,7 @@ const UserProfile: FC = () => {
         >
           <Popover.Panel className="absolute z-10 px-4 mt-5 transform -translate-x-1/2 left-1/2">
             <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 w-28">
-              <button onClick={() => signOut()}>Logout</button>
+              <button onClick={() => dispatch(userSignOut())}>Logout</button>
             </div>
           </Popover.Panel>
         </Transition>

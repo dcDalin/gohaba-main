@@ -1,11 +1,3 @@
-import {
-  browserSessionPersistence,
-  getAdditionalUserInfo,
-  getAuth,
-  GoogleAuthProvider,
-  setPersistence,
-  signInWithPopup
-} from 'firebase/auth';
 import { FC } from 'react';
 import { FaFacebookSquare } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
@@ -13,37 +5,24 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import SignInForm from '@/components/Forms/SignInForm';
 import Modal from '@/components/Modal';
+import { userSignInWithGoogle } from '@/redux/Authentication/authenticationSlice';
 import { closeAuthModals, openSignUpModal } from '@/redux/AuthModals';
 import { AppState } from '@/redux/store';
-
 const SignInModal: FC = () => {
   const dispatch = useDispatch();
 
   const {
-    authModals: { isSignInOpen }
+    authModals: { isSignInOpen },
+    auth: { loading, isSignedIn }
   } = useSelector((state: AppState) => state);
 
-  const handleSignInWithGoogle = async () => {
-    try {
-      const auth = getAuth();
-      await setPersistence(auth, browserSessionPersistence);
-
-      const provider = new GoogleAuthProvider();
-      const credential = await signInWithPopup(auth, provider);
-
-      const { user } = credential;
-      const { profile } = getAdditionalUserInfo(credential);
-      const google = profile as any;
-
-      console.log('USER IS: ***************: ', user);
-      // close auth modal
-      dispatch(closeAuthModals());
-      // show success toast
-      return { user, google };
-    } catch (err) {
-      console.log('Err is: ', err);
-    }
+  const handleSignInWithGoogle = () => {
+    dispatch(userSignInWithGoogle());
   };
+
+  if (isSignedIn) {
+    dispatch(closeAuthModals());
+  }
 
   return (
     <Modal
@@ -69,6 +48,7 @@ const SignInModal: FC = () => {
               <button
                 className="hidden md:block w-full text-center text-sm text-gray-600 group-hover:text-gray-800"
                 onClick={() => handleSignInWithGoogle()}
+                disabled={loading}
               >
                 Continue with Google
               </button>
@@ -80,6 +60,7 @@ const SignInModal: FC = () => {
             <button
               className="border border-gray-600 w-full custom-hover font-bold py-2 px-4 focus:outline-none focus:shadow-outline hover:bg-gray-600 hover:text-white"
               onClick={() => dispatch(openSignUpModal())}
+              disabled={loading}
             >
               Create a Ficlin Account
             </button>

@@ -2,7 +2,6 @@ import type { NextPage } from 'next';
 import { NextSeo } from 'next-seo';
 
 import AppLayout from '@/components/Layouts/AppLayout';
-import { withUser } from '@/lib/withAuth';
 
 const Events: NextPage = () => {
   return (
@@ -15,4 +14,4 @@ const Events: NextPage = () => {
   );
 };
 
-export default withUser(Events);
+export default Events;
