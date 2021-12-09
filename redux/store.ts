@@ -2,12 +2,14 @@ import { configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
 import { Action } from 'redux';
 
+import AuthenticationReducer from '@/redux/Authentication/authenticationSlice';
 import AuthModals from '@/redux/AuthModals';
 
 const makeStore = () =>
   configureStore({
     reducer: {
-      authModals: AuthModals
+      authModals: AuthModals,
+      auth: AuthenticationReducer
     },
     devTools: true
   });

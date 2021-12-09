@@ -1,24 +1,33 @@
 import '../styles/globals.css';
 import 'nprogress/nprogress.css'; //styles of nprogress
+import '@/lib/firebase.config';
 
-import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client';
 import Head from 'next/head';
 import Router from 'next/router';
-import withApollo from 'next-with-apollo';
 import NProgress from 'nprogress';
-import { useEffect } from 'react';
+import { useEffect, useLayoutEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
+import { client } from '@/lib/apollo';
+import { fetchUser } from '@/redux/Authentication/authenticationSlice';
 import { wrapper } from '@/redux/store';
-import { isDev, isSSR } from '@/utils/environment';
 
-const MyApp = ({ Component, pageProps, apollo }) => {
+const MyApp = ({ Component, pageProps }) => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, [dispatch]);
+
   useEffect(() => {
     Router.events.on('routeChangeStart', () => NProgress.start());
     Router.events.on('routeChangeComplete', () => NProgress.done());
     Router.events.on('routeChangeError', () => NProgress.done());
   }, []);
+
   return (
-    <ApolloProvider client={apollo}>
+    <ApolloProvider client={client}>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Home</title>
@@ -28,27 +37,4 @@ const MyApp = ({ Component, pageProps, apollo }) => {
   );
 };
 
-export default withApollo(({ initialState }) => {
-  const httpLink = new HttpLink({
-    uri: isDev
-      ? process.env.NEXT_PUBLIC_LOCAL_GRAPHQL_ENDPOINT
-      : process.env.NEXT_PUBLIC_REMOTE_GRAPHQL_ENDPOINT
-  });
-
-  let token = '';
-
-  if (typeof window !== 'undefined') {
-    token = localStorage.getItem('token') || '';
-  }
-
-  return new ApolloClient({
-    ssrMode: isSSR(),
-    link: httpLink,
-    cache: new InMemoryCache().restore(initialState || {}),
-    connectToDevTools: isDev,
-    credentials: 'include',
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
-})(wrapper.withRedux(MyApp));
+export default wrapper.withRedux(MyApp);

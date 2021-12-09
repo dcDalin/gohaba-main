@@ -5,15 +5,24 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import SignInForm from '@/components/Forms/SignInForm';
 import Modal from '@/components/Modal';
+import { userSignInWithGoogle } from '@/redux/Authentication/authenticationSlice';
 import { closeAuthModals, openSignUpModal } from '@/redux/AuthModals';
 import { AppState } from '@/redux/store';
-
 const SignInModal: FC = () => {
   const dispatch = useDispatch();
 
   const {
-    authModals: { isSignInOpen }
+    authModals: { isSignInOpen },
+    auth: { loading, isSignedIn }
   } = useSelector((state: AppState) => state);
+
+  const handleSignInWithGoogle = () => {
+    dispatch(userSignInWithGoogle());
+  };
+
+  if (isSignedIn) {
+    dispatch(closeAuthModals());
+  }
 
   return (
     <Modal
@@ -36,9 +45,13 @@ const SignInModal: FC = () => {
               <div className="w-full md:w-10 border border-white h-full flex items-center">
                 <FcGoogle className="m-auto" />
               </div>
-              <div className="hidden md:block w-full text-center text-sm text-gray-600 group-hover:text-gray-800">
+              <button
+                className="hidden md:block w-full text-center text-sm text-gray-600 group-hover:text-gray-800"
+                onClick={() => handleSignInWithGoogle()}
+                disabled={loading}
+              >
                 Continue with Google
-              </div>
+              </button>
             </div>
           </div>
           <SignInForm />
@@ -47,6 +60,7 @@ const SignInModal: FC = () => {
             <button
               className="border border-gray-600 w-full custom-hover font-bold py-2 px-4 focus:outline-none focus:shadow-outline hover:bg-gray-600 hover:text-white"
               onClick={() => dispatch(openSignUpModal())}
+              disabled={loading}
             >
               Create a Ficlin Account
             </button>

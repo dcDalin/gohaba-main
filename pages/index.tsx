@@ -1,7 +1,7 @@
-import withAuth from 'lib/withAuth';
 import type { NextPage } from 'next';
 import { NextSeo } from 'next-seo';
 
+import Books from '@/components/Books';
 import AppLayout from '@/components/Layouts/AppLayout';
 
 const Home: NextPage = () => {
@@ -9,10 +9,10 @@ const Home: NextPage = () => {
     <>
       <NextSeo title="Ficlin | Home" description="A short description goes here." />
       <AppLayout>
-        <p className="text-4xl">hello</p>
+        <Books />
       </AppLayout>
     </>
   );
 };
 
-export default withAuth(Home);
+export default Home;

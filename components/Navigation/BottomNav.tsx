@@ -7,9 +7,12 @@ import NavMenuItem from '@/components/Navigation/NavMenuItem';
 import { EVENTS, TOURS } from '@/components/Navigation/paths';
 
 import SignInButton from './SignInButton';
+import UserProfile from './UserProfile';
 
 const BottomNav: FC = () => {
   const router = useRouter();
+
+  const email = false;
 
   const handleRedirect = (path: string) => {
     router.push(path);
@@ -18,7 +21,7 @@ const BottomNav: FC = () => {
   return (
     <div className="shadow dark:bg-gray sm:block md:hidden w-full h-screen">
       <section className="block pt-2 fixed inset-x-0 bottom-0 z-10 bg-white shadow">
-        <div id="tabs" className="flex justify-between">
+        <div id="tabs" className="flex justify-between items-center">
           <NavMenuItem
             title="Tours"
             icon={<RiBusFill />}
@@ -31,7 +34,7 @@ const BottomNav: FC = () => {
             active={router.pathname === EVENTS}
             onClick={() => handleRedirect(EVENTS)}
           />
-          <SignInButton />
+          {email ? <UserProfile /> : <SignInButton />}
         </div>
       </section>
     </div>

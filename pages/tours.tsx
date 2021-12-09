@@ -8,7 +8,7 @@ const Tours: NextPage = () => {
     <>
       <NextSeo title="Tours" description="A short description goes here." />
       <AppLayout>
-        <p className="text-4xl">Tours</p>
+        <p className="text-4xl">Tours page</p>
       </AppLayout>
     </>
   );
