@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 import { JWT } from '@/utils/environment';
 
@@ -27,8 +27,8 @@ export const fetchUser = createAsyncThunk('authentication/fetchUser', async () =
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       unsubscribe();
       if (user) {
-        const token = await auth.currentUser.getIdToken();
-        localStorage.setItem(JWT, token);
+        const token = await auth.currentUser.getIdTokenResult();
+        localStorage.setItem(JWT, token.token);
 
         resolve(user);
       } else {
@@ -45,10 +45,8 @@ export const userSignInWithGoogle = createAsyncThunk(
     try {
       const credential = await signInWithPopup(auth, googleProvider);
 
-      const token = await auth.currentUser.getIdToken();
-
-      localStorage.setItem(JWT, token);
-      console.log('User is: *****************', credential.user);
+      const token = await auth.currentUser.getIdTokenResult();
+      localStorage.setItem(JWT, token.token);
       return credential.user;
     } catch (error) {
       return error.message;

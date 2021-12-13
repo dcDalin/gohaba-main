@@ -1,3 +1,4 @@
+import { useApolloClient } from '@apollo/client';
 import { Popover, Transition } from '@headlessui/react';
 import Image from 'next/image';
 import React, { FC, Fragment } from 'react';
@@ -17,6 +18,7 @@ const ProfileImage: FC<IProfileImageProps> = ({ photoURL }) => (
 );
 const UserProfile: FC = () => {
   const dispatch = useDispatch();
+  const client = useApolloClient();
 
   const {
     auth: {
@@ -24,7 +26,10 @@ const UserProfile: FC = () => {
     }
   } = useSelector((state: AppState) => state);
 
-  console.log('User is: ', displayName);
+  const handleSignOut = () => {
+    dispatch(userSignOut());
+    client.clearStore();
+  };
 
   return (
     <>
@@ -53,7 +58,7 @@ const UserProfile: FC = () => {
         >
           <Popover.Panel className="absolute z-10 px-4 mt-5 transform -translate-x-1/2 left-1/2">
             <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 w-28">
-              <button onClick={() => dispatch(userSignOut())}>Logout</button>
+              <button onClick={handleSignOut}>Logout</button>
             </div>
           </Popover.Panel>
         </Transition>

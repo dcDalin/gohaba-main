@@ -2,9 +2,11 @@ import { useRouter } from 'next/router';
 import { FC } from 'react';
 import { RiBusFill } from 'react-icons/ri';
 import { TiTicket } from 'react-icons/ti';
+import { useSelector } from 'react-redux';
 
 import NavMenuItem from '@/components/Navigation/NavMenuItem';
 import { EVENTS, TOURS } from '@/components/Navigation/paths';
+import { AppState } from '@/redux/store';
 
 import SignInButton from './SignInButton';
 import UserProfile from './UserProfile';
@@ -12,11 +14,13 @@ import UserProfile from './UserProfile';
 const BottomNav: FC = () => {
   const router = useRouter();
 
-  const email = false;
-
   const handleRedirect = (path: string) => {
     router.push(path);
   };
+
+  const {
+    auth: { isSignedIn }
+  } = useSelector((state: AppState) => state);
 
   return (
     <div className="shadow dark:bg-gray sm:block md:hidden w-full h-screen">
@@ -34,7 +38,7 @@ const BottomNav: FC = () => {
             active={router.pathname === EVENTS}
             onClick={() => handleRedirect(EVENTS)}
           />
-          {email ? <UserProfile /> : <SignInButton />}
+          {isSignedIn ? <UserProfile /> : <SignInButton />}
         </div>
       </section>
     </div>

@@ -16,11 +16,23 @@ const authLink = setContext((_, { headers }) => {
   if (typeof window !== 'undefined') {
     token = localStorage.getItem(JWT);
   }
+
+  let authHeaders: { Authorization?: string; 'x-hasura-role'?: string };
+
+  if (token) {
+    authHeaders = {
+      Authorization: `Bearer ${token}`
+    };
+  } else {
+    authHeaders = {
+      'x-hasura-role': 'anonymous'
+    };
+  }
   // return the headers to the context so httpLink can read them
   return {
     headers: {
       ...headers,
-      Authorization: token ? `Bearer ${token}` : ''
+      ...authHeaders
     }
   };
 });
