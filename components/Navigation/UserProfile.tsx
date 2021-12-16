@@ -16,20 +16,23 @@ const ProfileImage: FC<IProfileImageProps> = ({ photoURL }) => (
     <Image src={`${photoURL}`} alt="Picture of the author" width={32} height={32} />
   </div>
 );
+
 const UserProfile: FC = () => {
   const dispatch = useDispatch();
   const client = useApolloClient();
 
   const {
-    auth: {
-      user: { photoURL, displayName }
-    }
+    auth: { user }
   } = useSelector((state: AppState) => state);
 
   const handleSignOut = () => {
     dispatch(userSignOut());
     client.clearStore();
   };
+
+  if (!user) return <></>;
+
+  const { photoURL, displayName } = user;
 
   return (
     <>
