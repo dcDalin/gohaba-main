@@ -1,5 +1,5 @@
 import { ref } from '@firebase/database';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { AsyncThunkAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { getDatabase, onValue } from 'firebase/database';
 
@@ -96,13 +96,13 @@ export const fetchUser = createAsyncThunk('authentication/fetchUser', async () =
 
 export const userSignInWithGoogle = createAsyncThunk(
   'authentication/signInWithGoogle',
-  async (_url: string, thunkAPI) => {
+  async (_params, { dispatch }) => {
     try {
       const credential = await signInWithPopup(auth, googleProvider);
 
       const token = await credential.user.getIdToken(true);
       localStorage.setItem(JWT, token);
-      thunkAPI.dispatch(fetchUser());
+      dispatch(fetchUser());
 
       return credential.user;
     } catch (error) {

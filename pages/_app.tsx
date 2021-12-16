@@ -7,14 +7,18 @@ import Head from 'next/head';
 import Router from 'next/router';
 import NProgress from 'nprogress';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { client } from '@/lib/apollo';
 import { fetchUser } from '@/redux/Authentication/authenticationSlice';
-import { wrapper } from '@/redux/store';
+import { AppState, wrapper } from '@/redux/store';
 
 const MyApp = ({ Component, pageProps }) => {
   const dispatch = useDispatch();
+
+  const {
+    auth: { loading }
+  } = useSelector((state: AppState) => state);
 
   useEffect(() => {
     dispatch(fetchUser());
@@ -25,6 +29,8 @@ const MyApp = ({ Component, pageProps }) => {
     Router.events.on('routeChangeComplete', () => NProgress.done());
     Router.events.on('routeChangeError', () => NProgress.done());
   }, []);
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <ApolloProvider client={client}>
