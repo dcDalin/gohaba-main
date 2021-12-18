@@ -1,9 +1,7 @@
-import { FC, ReactNode, useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
-
-import ModalWrapper from '@/components/Modal/Modal';
-
-interface IModalsProps {
+import { Dialog, Transition } from '@headlessui/react';
+import { FC, Fragment, ReactNode } from 'react';
+import { GrClose } from 'react-icons/gr';
+interface IModalProps {
   title?: string;
   openModal: boolean;
   closeModal: () => void;
@@ -11,33 +9,54 @@ interface IModalsProps {
   widths?: string;
 }
 
-const Modal: FC<IModalsProps> = ({
-  openModal,
-  title,
-  closeModal,
+const ModalWrapper: FC<IModalProps> = ({
   content,
-  widths
-}: IModalsProps) => {
-  const [mounted, setMounted] = useState(false);
+  title,
+  openModal,
+  closeModal,
+  widths = 'w-full md:w-1/2 lg:w-1/3'
+}: IModalProps) => {
+  return (
+    <Transition appear show={openModal} as={Fragment}>
+      <Dialog as="div" className="fixed inset-0 z-10 overflow-y-auto" onClose={closeModal}>
+        <div className="min-h-screen px-4 text-center">
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            leave="ease-in duration-200"
+          >
+            <Dialog.Overlay className="fixed inset-0 bg-gray-800 opacity-20" />
+          </Transition.Child>
 
-  useEffect(() => {
-    setMounted(true);
-
-    return () => setMounted(false);
-  }, []);
-
-  return mounted
-    ? createPortal(
-        <ModalWrapper
-          openModal={openModal}
-          title={title}
-          closeModal={closeModal}
-          content={content}
-          widths={widths}
-        />,
-        document.querySelector('#mymodal')
-      )
-    : null;
+          {/* This element is to trick the browser into centering the modal contents. */}
+          <span className="inline-block h-screen align-middle" aria-hidden="true">
+            &#8203;
+          </span>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0 scale-95"
+            enterTo="opacity-100 scale-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100 scale-100"
+            leaveTo="opacity-0 scale-95"
+          >
+            <div
+              className={`inline-block p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow ${widths}`}
+            >
+              <div className="flex justify-between items-center">
+                <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
+                  {title}
+                </Dialog.Title>
+                <GrClose className="cursor-pointer" onClick={closeModal} />
+              </div>
+              <div className="mt-2">{content}</div>
+            </div>
+          </Transition.Child>
+        </div>
+      </Dialog>
+    </Transition>
+  );
 };
 
-export default Modal;
+export default ModalWrapper;

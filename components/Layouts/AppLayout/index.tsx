@@ -5,13 +5,14 @@ import Navigation from '@/components/Navigation';
 
 interface IAppLayoutProps {
   children: ReactNode;
+  admin?: boolean;
 }
 
-const AppLayout: FC<IAppLayoutProps> = ({ children }: IAppLayoutProps) => {
+const AppLayout: FC<IAppLayoutProps> = ({ children, admin = false }: IAppLayoutProps) => {
   return (
     <div>
       <Navigation />
-      <div className="container mx-auto">{children}</div>
+      <div className={`${admin ? '' : 'container mx-auto'} `}>{children}</div>
       <Footer />
     </div>
   );

@@ -12,7 +12,7 @@ interface IProfileImageProps {
   photoURL: string;
 }
 const ProfileImage: FC<IProfileImageProps> = ({ photoURL }) => (
-  <div className="rounded-full h-8 w-8 flex items-center justify-center border border-gray-100">
+  <div className="rounded-full h-8 w-8 p-1 flex items-center justify-center border border-gray-100">
     <Image src={`${photoURL}`} alt="Picture of the author" width={32} height={32} />
   </div>
 );
@@ -37,8 +37,12 @@ const UserProfile: FC = () => {
   return (
     <>
       {/* Display on mobile only */}
-      <div className="flex px-6 md:hidden">
-        <ProfileImage photoURL={photoURL} />
+      <div className="flex md:hidden">
+        <div
+          className={`px-1 mx-auto flex flex-col md:flex-row h-12 md:h-16 outline-none tracking-wide text-lg items-center hover:text-gray-600 hover:border-gray-600 hover:bg-gray-50 border-transparent hover:border-current focus:outline-none focus:text-gray-600 cursor-pointer`}
+        >
+          <ProfileImage photoURL={photoURL} />
+        </div>
       </div>
 
       {/* Display on desktop only */}

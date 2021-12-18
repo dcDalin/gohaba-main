@@ -4,14 +4,17 @@ import { Action } from 'redux';
 
 import AuthenticationReducer from '@/redux/Authentication/authenticationSlice';
 import AuthModals from '@/redux/AuthModals';
+import UsersReducer from '@/redux/Users/userSlice';
 
 const makeStore = () =>
   configureStore({
     reducer: {
       authModals: AuthModals,
-      auth: AuthenticationReducer
+      auth: AuthenticationReducer,
+      users: UsersReducer
     },
-    devTools: true
+    devTools: true,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware()
   });
 
 export type AppStore = ReturnType<typeof makeStore>;

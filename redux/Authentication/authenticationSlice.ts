@@ -1,5 +1,5 @@
 import { ref } from '@firebase/database';
-import { AsyncThunkAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { getDatabase, onValue } from 'firebase/database';
 
@@ -11,61 +11,52 @@ const database = getDatabase();
 // Auth providers
 const googleProvider = new GoogleAuthProvider();
 
+const initialClaims = {
+  'x-hasura-allowed-roles': [],
+  'x-hasura-default-role': null,
+  'x-hasura-user-id': null,
+  admin: false,
+  accessLevel: null
+};
+
 export interface AuthenticationState {
   isSignedIn: boolean;
   loading: boolean;
   user: any;
   error: any;
+  claims: {
+    'x-hasura-allowed-roles': Array<string>;
+    'x-hasura-default-role': string | null;
+    'x-hasura-user-id': string | null;
+    admin: boolean;
+    accessLevel: number | null;
+  };
 }
 
 export const initialState: AuthenticationState = {
   isSignedIn: false,
   loading: false,
   user: null,
-  error: null
+  error: null,
+  claims: initialClaims
 };
-
-// export const fetchUser = createAsyncThunk('authentication/fetchUser', () => {
-//   auth.onAuthStateChanged(async (user) => {
-//     // On user login add new listener.
-//     if (user) {
-//       const idTokenResult = await user.getIdTokenResult();
-//       const hasuraClaim = idTokenResult.claims['https://hasura.io/jwt/claims'];
-
-//       if (hasuraClaim) {
-//         console.log('Valid claims');
-//       } else {
-//         // Check if refresh is required.
-//         const metadataRef = ref(database, 'metadata/' + user.uid + '/refreshTime');
-
-//         onValue(metadataRef, async (snapshot) => {
-//           if (snapshot.exists()) {
-//             const token = await user.getIdToken(true);
-//             const idTokenResult = await user.getIdTokenResult();
-//             const hasuraClaim = idTokenResult.claims['https://hasura.io/jwt/claims'];
-//             console.log('Hasura claim is: ', hasuraClaim);
-//             localStorage.setItem(JWT, token);
-//           }
-//         });
-//       }
-//     }
-//   });
-// });
 
 export const fetchUser = createAsyncThunk('authentication/fetchUser', async () => {
   return new Promise<any>((resolve, reject) => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       unsubscribe();
       if (user) {
-        console.log('User found ******************');
         const idTokenResult = await user.getIdTokenResult();
         const hasuraClaim = idTokenResult.claims['https://hasura.io/jwt/claims'];
 
-        console.log('Hasura claim is: ****************: ', hasuraClaim);
         if (hasuraClaim) {
           const token = idTokenResult.token;
+          console.log('Hasura claim is: ****************: ', idTokenResult.claims);
+
+          const claims = { ...user, ...{ claims: idTokenResult.claims } };
           localStorage.setItem(JWT, token);
-          resolve(user);
+
+          resolve(claims);
         } else {
           // Check if refresh is required.
           const metadataRef = ref(database, 'metadata/' + user.uid + '/refreshTime');
@@ -76,10 +67,10 @@ export const fetchUser = createAsyncThunk('authentication/fetchUser', async () =
             if (snapshot) {
               const token = await user.getIdToken(true);
               const idTokenResult = await user.getIdTokenResult();
-              const hasuraClaim = idTokenResult.claims['https://hasura.io/jwt/claims'];
-              console.log('Hasura claim is: ', hasuraClaim);
+
+              const claims = { ...user, ...{ claims: idTokenResult.claims } };
               localStorage.setItem(JWT, token);
-              resolve(user);
+              resolve(claims);
             } else {
               localStorage.removeItem(JWT);
               reject('Invalid token');
@@ -100,11 +91,16 @@ export const userSignInWithGoogle = createAsyncThunk(
     try {
       const credential = await signInWithPopup(auth, googleProvider);
 
-      const token = await credential.user.getIdToken(true);
-      localStorage.setItem(JWT, token);
-      dispatch(fetchUser());
+      console.log('Credential is: **********: ', credential);
+      if (credential) {
+        const token = await credential.user.getIdToken(true);
+        localStorage.setItem(JWT, token);
+        dispatch(fetchUser());
 
-      return credential.user;
+        return credential.user;
+      } else {
+        throw new Error('Something went wrong');
+      }
     } catch (error) {
       return error.message;
     }
@@ -131,8 +127,8 @@ export const authenticationSlice = createSlice({
       .addCase(userSignInWithGoogle.pending, (state) => {
         return { ...state, loading: true, isSignedIn: false, user: null, error: null };
       })
-      .addCase(userSignInWithGoogle.fulfilled, (state, action) => {
-        return { ...state, loading: false, isSignedIn: true, user: action.payload, error: null };
+      .addCase(userSignInWithGoogle.fulfilled, (state) => {
+        return { ...state, loading: true, isSignedIn: false, user: null, error: null };
       })
       .addCase(userSignInWithGoogle.rejected, (state, action) => {
         return {
@@ -144,10 +140,24 @@ export const authenticationSlice = createSlice({
         };
       })
       .addCase(fetchUser.pending, (state) => {
-        return { ...state, loading: true, isSignedIn: false, user: null, error: null };
+        return {
+          ...state,
+          loading: true,
+          isSignedIn: false,
+          user: null,
+          claims: initialClaims,
+          error: null
+        };
       })
       .addCase(fetchUser.fulfilled, (state, action) => {
-        return { ...state, loading: false, isSignedIn: true, user: action.payload, error: null };
+        return {
+          ...state,
+          loading: false,
+          isSignedIn: true,
+          user: action.payload,
+          claims: { ...initialClaims, ...action.payload.claims['https://hasura.io/jwt/claims'] },
+          error: null
+        };
       })
       .addCase(fetchUser.rejected, (state, action) => {
         return {
@@ -155,14 +165,29 @@ export const authenticationSlice = createSlice({
           loading: false,
           isSignedIn: false,
           user: null,
+          claims: initialClaims,
           error: action.payload
         };
       })
       .addCase(userSignOut.pending, (state) => {
-        return { ...state, loading: true, isSignedIn: false, user: null, error: null };
+        return {
+          ...state,
+          loading: true,
+          isSignedIn: false,
+          user: null,
+          claims: initialClaims,
+          error: null
+        };
       })
       .addCase(userSignOut.fulfilled, (state) => {
-        return { ...state, loading: false, isSignedIn: false, user: null, error: null };
+        return {
+          ...state,
+          loading: false,
+          isSignedIn: false,
+          user: null,
+          claims: initialClaims,
+          error: null
+        };
       })
       .addCase(userSignOut.rejected, (state, action) => {
         return {
@@ -170,6 +195,7 @@ export const authenticationSlice = createSlice({
           loading: false,
           isSignedIn: false,
           user: null,
+          claims: initialClaims,
           error: action.payload
         };
       });
