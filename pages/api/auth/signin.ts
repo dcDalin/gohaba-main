@@ -41,7 +41,7 @@ const signin = async (req: NextApiRequest, res: NextApiResponse) => {
 
     console.log('DB USER IS: ', dbUser);
 
-    if (!dbUser) return res.status(400).json({ message: 'No user found' });
+    if (!dbUser) return res.status(400).json({ message: 'Invalid email and or password' });
 
     // decrypt password
     const validPassword = bcrypt.compareSync(password, dbUser.password);

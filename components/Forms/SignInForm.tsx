@@ -1,15 +1,28 @@
+import { useMutation } from '@apollo/client';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+
+import Button from '@/components/UI/Button';
+import { loginWithEmailAndPassword } from '@/redux/Authentication/authenticationSlice';
+
+type FormData = {
+  email: string;
+  password: string;
+};
 
 const SignInForm: FC = () => {
+  const dispatch = useDispatch();
   const {
-    formState: { errors },
+    formState: { errors, isSubmitting },
     handleSubmit,
     register
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log({ data });
+  const onSubmit = (data: FormData) => {
+    const { email, password } = data;
+
+    dispatch(loginWithEmailAndPassword({ email, password }));
   };
 
   return (
@@ -22,14 +35,13 @@ const SignInForm: FC = () => {
           <input
             className="form-input"
             id="email"
-            type="text"
-            placeholder="email@address.com"
+            type="email"
             {...register('email', {
               required: 'Email is required',
               validate: (value) => value.includes('@') || "Email must include '@' symbol"
             })}
           />
-          {errors.email && <p className="text-red-500 text-xs italic">{errors.email.message}</p>}
+          {errors.email && <p className="form-error">{errors.email.message}</p>}
         </div>
         <div className="mb-6">
           <label className="form-label" htmlFor="password">
@@ -44,17 +56,10 @@ const SignInForm: FC = () => {
               required: 'Password is required'
             })}
           />
-          {errors.password && (
-            <p className="text-red-500 text-xs italic">{errors.password.message}</p>
-          )}
+          {errors.password && <p className="form-error">{errors.password.message}</p>}
         </div>
         <div className="flex items-center justify-between">
-          <button
-            className="bg-blue-500 custom-hover text-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline hover:bg-blue-700"
-            type="submit"
-          >
-            Sign In
-          </button>
+          <Button title="Sign in" loading={isSubmitting} />
           <a
             className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-700"
             href="/asd"

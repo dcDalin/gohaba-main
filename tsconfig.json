@@ -21,7 +21,9 @@
       "@/utils/*": ["utils/*"],
       "@/theme/*": ["theme/*"],
       "@/graphql/*": ["graphql/*"],
-      "@/lib/*": ["lib/*"]
+      "@/lib/*": ["lib/*"],
+      "@/models/*": ["models/*"],
+      "@/operations/*": ["operations/*"]
     },
     "incremental": true
   },

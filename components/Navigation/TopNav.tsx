@@ -12,18 +12,17 @@ import { ADMIN, EVENTS, TOURS } from '@/components/Navigation/paths';
 import SignInButton from '@/components/Navigation/SignInButton';
 import UserProfile from '@/components/Navigation/UserProfile';
 import { AppState } from '@/redux/store';
-import MobileSlideMenu from './MobileSlideMenu';
 
 const TopNav: FC = () => {
   const router = useRouter();
 
-  const {
-    auth: { isSignedIn, claims }
-  } = useSelector((state: AppState) => state);
-
   const handleRedirect = (path: string) => {
     router.push(path);
   };
+
+  const {
+    auth: { isSignedIn }
+  } = useSelector((state: AppState) => state);
 
   return (
     <>
@@ -47,16 +46,6 @@ const TopNav: FC = () => {
               active={router.pathname === EVENTS}
               onClick={() => handleRedirect(EVENTS)}
             />
-
-            {/* Staff role route */}
-            {isSignedIn && claims['x-hasura-allowed-roles'].includes('staff') && (
-              <NavMenuItem
-                title="Admin"
-                icon={<GrUserAdmin className="h-full w-full" />}
-                active={router.pathname === ADMIN}
-                onClick={() => handleRedirect(ADMIN)}
-              />
-            )}
           </div>
           <div className="hidden md:flex">{isSignedIn ? <UserProfile /> : <SignInButton />}</div>
         </div>

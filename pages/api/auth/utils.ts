@@ -6,9 +6,9 @@ import { isDev } from '@/utils/environment';
 const HASURA_ENDPOINT = isDev
   ? process.env.NEXT_PUBLIC_LOCAL_GRAPHQL_ENDPOINT
   : process.env.NEXT_PUBLIC_REMOTE_GRAPHQL_ENDPOINT;
-const HASURA_ADMIN_SECRET = process.env.HASURA_ADMIN_SECRET;
+
 const HASURA_GRAPHQL_JWT_SECRET = process.env.HASURA_GRAPHQL_JWT_SECRET;
-const JWT_EXPIRE_TIME = '60m';
+const JWT_EXPIRE_TIME = '1m';
 
 // This is a function which takes the URL and headers for Hasura queries
 // and returns a function which sends GraphQL requests to the Hasura instance
@@ -30,7 +30,7 @@ export const makeGraphQLClient = ({ url, headers }) => {
 export const sendQuery = async (variables, HASURA_OPERATION) => {
   const fetchResponse = await fetch(HASURA_ENDPOINT, {
     headers: {
-      'X-Hasura-Admin-Secret': HASURA_ADMIN_SECRET
+      'x-hasura-role': 'anonymous'
     },
     method: 'POST',
     body: JSON.stringify({

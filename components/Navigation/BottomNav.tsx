@@ -19,9 +19,7 @@ const BottomNav: FC = () => {
     router.push(path);
   };
 
-  const {
-    auth: { isSignedIn, claims }
-  } = useSelector((state: AppState) => state);
+  const isSignedIn = false;
 
   return (
     <div className="shadow dark:bg-gray sm:block md:hidden w-full h-screen">
@@ -37,14 +35,6 @@ const BottomNav: FC = () => {
             active={router.pathname === EVENTS}
             onClick={() => handleRedirect(EVENTS)}
           />
-          {/* Staff role route */}
-          {isSignedIn && claims['x-hasura-allowed-roles'].includes('staff') && (
-            <NavMenuItem
-              icon={<GrUserAdmin className="h-full w-full" />}
-              active={router.pathname === ADMIN}
-              onClick={() => handleRedirect(ADMIN)}
-            />
-          )}
 
           {isSignedIn ? <UserProfile /> : <SignInButton />}
         </div>

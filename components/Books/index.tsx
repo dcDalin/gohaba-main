@@ -1,6 +1,8 @@
 import { gql, useQuery } from '@apollo/client';
 import { FC } from 'react';
 
+import { authModalsVar } from '@/lib/cache';
+
 const GET_BOOKS = gql`
   query MyQuery {
     book {
@@ -17,7 +19,7 @@ const Books: FC = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{`Error! ${error.message}`}</div>;
 
-  console.log('Data is: ', data);
+  console.log('Data is: ', authModalsVar());
 
   return <div>hey books</div>;
 };

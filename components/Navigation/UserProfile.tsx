@@ -5,7 +5,7 @@ import React, { FC, Fragment } from 'react';
 import { BsChevronDown } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { userSignOut } from '@/redux/Authentication/authenticationSlice';
+import { logOut } from '@/redux/Authentication/authenticationSlice';
 import { AppState } from '@/redux/store';
 
 interface IProfileImageProps {
@@ -18,21 +18,20 @@ const ProfileImage: FC<IProfileImageProps> = ({ photoURL }) => (
 );
 
 const UserProfile: FC = () => {
-  const dispatch = useDispatch();
   const client = useApolloClient();
 
-  const {
-    auth: { user }
-  } = useSelector((state: AppState) => state);
+  const dispatch = useDispatch();
 
   const handleSignOut = () => {
-    dispatch(userSignOut());
+    dispatch(logOut());
     client.clearStore();
   };
 
-  if (!user) return <></>;
-
-  const { photoURL, displayName } = user;
+  const {
+    auth: {
+      user: { displayName, profilePictureUrl }
+    }
+  } = useSelector((state: AppState) => state);
 
   return (
     <>
@@ -41,7 +40,7 @@ const UserProfile: FC = () => {
         <div
           className={`px-1 mx-auto flex flex-col md:flex-row h-12 md:h-16 outline-none tracking-wide text-lg items-center hover:text-gray-600 hover:border-gray-600 hover:bg-gray-50 border-transparent hover:border-current focus:outline-none focus:text-gray-600 cursor-pointer`}
         >
-          <ProfileImage photoURL={photoURL} />
+          <ProfileImage photoURL={profilePictureUrl} />
         </div>
       </div>
 
@@ -49,7 +48,7 @@ const UserProfile: FC = () => {
       <Popover className="hidden md:block relative">
         <Popover.Button>
           <div className="flex items-center h-full">
-            <ProfileImage photoURL={photoURL} />
+            <ProfileImage photoURL={profilePictureUrl} />
             <div className="px-2 hover:text-bold">{displayName}</div>
             <BsChevronDown />
           </div>

@@ -1,28 +1,23 @@
 import '../styles/globals.css';
 import 'nprogress/nprogress.css'; //styles of nprogress
-import '@/lib/firebase.config';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { ApolloProvider } from '@apollo/client';
 import Head from 'next/head';
 import Router from 'next/router';
 import NProgress from 'nprogress';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
 
-import { client } from '@/lib/apollo';
-import { fetchUser } from '@/redux/Authentication/authenticationSlice';
-import { AppState, wrapper } from '@/redux/store';
+import { useApollo } from '@/lib/apollo';
+import { fetchUserProfile } from '@/redux/Authentication/authenticationSlice';
+import { wrapper } from '@/redux/store';
 
 const MyApp = ({ Component, pageProps }) => {
   const dispatch = useDispatch();
 
-  const {
-    auth: { loading }
-  } = useSelector((state: AppState) => state);
-
-  useEffect(() => {
-    dispatch(fetchUser());
-  }, [dispatch]);
+  const client = useApollo(pageProps);
 
   useEffect(() => {
     Router.events.on('routeChangeStart', () => NProgress.start());
@@ -30,7 +25,9 @@ const MyApp = ({ Component, pageProps }) => {
     Router.events.on('routeChangeError', () => NProgress.done());
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  useEffect(() => {
+    dispatch(fetchUserProfile());
+  }, [dispatch]);
 
   return (
     <ApolloProvider client={client}>
@@ -39,6 +36,7 @@ const MyApp = ({ Component, pageProps }) => {
         <title>Home</title>
       </Head>
       <Component {...pageProps} />
+      <ToastContainer />
     </ApolloProvider>
   );
 };

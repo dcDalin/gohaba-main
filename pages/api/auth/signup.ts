@@ -5,8 +5,8 @@ import validator from 'validator';
 import { generateJWT, sendQuery } from './utils';
 
 const HASURA_OPERATION = `
-  mutation UserSignUp($email: String, $password: String) {
-    insert_users_one(object: {email: $email, password: $password}) {
+  mutation UserSignUp($displayName: String, $email: String, $password: String) {
+    insert_users_one(object: {displayName: $displayName, email: $email, password: $password}) {
       id
     }
   }
@@ -15,16 +15,17 @@ const HASURA_OPERATION = `
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const signUp = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
+    console.log('Signup fired');
     if (req.method !== 'POST') {
       return res.status(400).json({
         message: 'Only POST requests allowed'
       });
     }
 
-    const { email, password } = req.body.input;
+    const { displayName, email, password } = req.body.input;
 
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Email and or password required' });
+    if (!displayName || !email || !password) {
+      return res.status(400).json({ message: 'Display name, Email and or password required' });
     }
 
     // validate email
@@ -36,7 +37,10 @@ const signUp = async (req: NextApiRequest, res: NextApiResponse) => {
     const hashedPassword = bcrypt.hashSync(password);
 
     // fire query to hasura
-    const request = await sendQuery({ email, password: hashedPassword }, HASURA_OPERATION);
+    const request = await sendQuery(
+      { displayName, email, password: hashedPassword },
+      HASURA_OPERATION
+    );
 
     const { data, errors } = request;
 
@@ -49,7 +53,7 @@ const signUp = async (req: NextApiRequest, res: NextApiResponse) => {
     // generate jwt token
     const token = generateJWT({
       defaultRole: 'user',
-      allowedRoles: ['user'],
+      allowedRoles: ['anonymous'],
       otherClaims: {
         'x-hasura-user-id': id
       }
