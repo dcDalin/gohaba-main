@@ -1,10 +1,11 @@
-import { useMutation } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 
 import Button from '@/components/UI/Button';
-import { loginWithEmailAndPassword } from '@/redux/Authentication/authenticationSlice';
+import useSignIn from '@/hooks/useSignIn';
+import { closeAuthModals } from '@/operations/mutations/AuthModals';
+import { JWT } from '@/utils/environment';
 
 type FormData = {
   email: string;
@@ -12,17 +13,36 @@ type FormData = {
 };
 
 const SignInForm: FC = () => {
-  const dispatch = useDispatch();
+  // hooks
+  const { signInUser, loading } = useSignIn();
+
+  const client = useApolloClient();
+
+  // hook form
   const {
-    formState: { errors, isSubmitting },
+    formState: { errors },
     handleSubmit,
     register
   } = useForm();
 
-  const onSubmit = (data: FormData) => {
-    const { email, password } = data;
+  const onSubmit = async (data: FormData) => {
+    try {
+      const { email, password } = data;
 
-    dispatch(loginWithEmailAndPassword({ email, password }));
+      const {
+        data: {
+          UserSignIn: { token }
+        }
+      } = await signInUser({ variables: { email, password } });
+
+      localStorage.setItem(JWT, token);
+      closeAuthModals();
+      await client.refetchQueries({
+        include: ['GetUserProfile']
+      });
+    } catch (error) {
+      console.log('Sign in error: ', error);
+    }
   };
 
   return (
@@ -59,7 +79,7 @@ const SignInForm: FC = () => {
           {errors.password && <p className="form-error">{errors.password.message}</p>}
         </div>
         <div className="flex items-center justify-between">
-          <Button title="Sign in" loading={isSubmitting} />
+          <Button title="Sign in" loading={loading} />
           <a
             className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-700"
             href="/asd"

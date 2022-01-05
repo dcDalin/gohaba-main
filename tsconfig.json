@@ -23,7 +23,8 @@
       "@/graphql/*": ["graphql/*"],
       "@/lib/*": ["lib/*"],
       "@/models/*": ["models/*"],
-      "@/operations/*": ["operations/*"]
+      "@/operations/*": ["operations/*"],
+      "@/hooks/*": ["hooks/*"]
     },
     "incremental": true
   },

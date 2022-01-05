@@ -8,7 +8,7 @@ const HASURA_ENDPOINT = isDev
   : process.env.NEXT_PUBLIC_REMOTE_GRAPHQL_ENDPOINT;
 
 const HASURA_GRAPHQL_JWT_SECRET = process.env.HASURA_GRAPHQL_JWT_SECRET;
-const JWT_EXPIRE_TIME = '1m';
+const JWT_EXPIRE_TIME = '1h';
 
 // This is a function which takes the URL and headers for Hasura queries
 // and returns a function which sends GraphQL requests to the Hasura instance

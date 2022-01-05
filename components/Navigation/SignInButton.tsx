@@ -9,7 +9,7 @@ const SignInButton: FC = () => {
     <NavMenuItem
       title="Sign In"
       icon={<CgProfile className="h-full w-full" />}
-      onClick={openSignUpModal}
+      onClick={() => openSignUpModal()}
     />
   );
 };

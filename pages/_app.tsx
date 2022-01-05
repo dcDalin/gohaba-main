@@ -3,20 +3,16 @@ import 'nprogress/nprogress.css'; //styles of nprogress
 import 'react-toastify/dist/ReactToastify.css';
 
 import { ApolloProvider } from '@apollo/client';
+import { AppProps } from 'next/app';
 import Head from 'next/head';
 import Router from 'next/router';
 import NProgress from 'nprogress';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 
 import { useApollo } from '@/lib/apollo';
-import { fetchUserProfile } from '@/redux/Authentication/authenticationSlice';
-import { wrapper } from '@/redux/store';
 
-const MyApp = ({ Component, pageProps }) => {
-  const dispatch = useDispatch();
-
+const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
   const client = useApollo(pageProps);
 
   useEffect(() => {
@@ -25,10 +21,6 @@ const MyApp = ({ Component, pageProps }) => {
     Router.events.on('routeChangeError', () => NProgress.done());
   }, []);
 
-  useEffect(() => {
-    dispatch(fetchUserProfile());
-  }, [dispatch]);
-
   return (
     <ApolloProvider client={client}>
       <Head>
@@ -36,9 +28,10 @@ const MyApp = ({ Component, pageProps }) => {
         <title>Home</title>
       </Head>
       <Component {...pageProps} />
+
       <ToastContainer />
     </ApolloProvider>
   );
 };
 
-export default wrapper.withRedux(MyApp);
+export default MyApp;

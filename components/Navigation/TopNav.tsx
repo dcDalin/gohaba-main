@@ -1,28 +1,27 @@
+import { NetworkStatus } from '@apollo/client';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
-import { GrUserAdmin } from 'react-icons/gr';
 import { RiBusFill } from 'react-icons/ri';
 import { TiTicket } from 'react-icons/ti';
-import { useSelector } from 'react-redux';
 
 import SignInModal from '@/components/Modal/SignInModal';
 import NavMenuItem from '@/components/Navigation/NavMenuItem';
 import { ADMIN, EVENTS, TOURS } from '@/components/Navigation/paths';
 import SignInButton from '@/components/Navigation/SignInButton';
 import UserProfile from '@/components/Navigation/UserProfile';
-import { AppState } from '@/redux/store';
+import useUserProfile from '@/hooks/useUserProfile';
 
 const TopNav: FC = () => {
   const router = useRouter();
+
+  const { data, loading, networkStatus, refetch } = useUserProfile();
 
   const handleRedirect = (path: string) => {
     router.push(path);
   };
 
-  const {
-    auth: { isSignedIn }
-  } = useSelector((state: AppState) => state);
+  console.log('Top nav refetch is: ', networkStatus);
 
   return (
     <>
@@ -47,7 +46,15 @@ const TopNav: FC = () => {
               onClick={() => handleRedirect(EVENTS)}
             />
           </div>
-          <div className="hidden md:flex">{isSignedIn ? <UserProfile /> : <SignInButton />}</div>
+          <div className="hidden md:flex">
+            {loading || networkStatus === NetworkStatus.refetch ? (
+              <div>Loading...</div>
+            ) : !loading && data && data.UserProfile.success ? (
+              <UserProfile />
+            ) : (
+              <SignInButton />
+            )}
+          </div>
         </div>
       </div>
       <SignInModal />

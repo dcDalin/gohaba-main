@@ -1,3 +1,4 @@
+import { useReactiveVar } from '@apollo/client';
 import { FC } from 'react';
 import { FaFacebookSquare } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
@@ -8,9 +9,8 @@ import { authModalsVar } from '@/lib/cache';
 import { closeAuthModals, openSignUpModal } from '@/operations/mutations/AuthModals';
 
 const SignInModal: FC = () => {
-  const { isSignInOpen } = authModalsVar();
+  const { isSignInOpen } = useReactiveVar(authModalsVar);
 
-  console.log('Is signin open: ', isSignInOpen);
   return (
     <Modal
       title="Sign In"

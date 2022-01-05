@@ -1,7 +1,8 @@
-import { FC, ReactNode } from 'react';
+import { FC, ReactNode, useEffect } from 'react';
 
 import Footer from '@/components/Footer';
 import Navigation from '@/components/Navigation';
+import useUserProfile from '@/hooks/useUserProfile';
 
 interface IAppLayoutProps {
   children: ReactNode;
@@ -9,6 +10,12 @@ interface IAppLayoutProps {
 }
 
 const AppLayout: FC<IAppLayoutProps> = ({ children, admin = false }: IAppLayoutProps) => {
+  const { refetch } = useUserProfile();
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
   return (
     <div>
       <Navigation />

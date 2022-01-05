@@ -2,6 +2,9 @@ import { InMemoryCache, makeVar } from '@apollo/client';
 
 import { InitialAuthModalState } from '@/models/AuthModals';
 
+// reactive vars
+export const authModalsVar = makeVar(InitialAuthModalState);
+
 export const cache: InMemoryCache = new InMemoryCache({
   typePolicies: {
     Query: {
@@ -15,5 +18,3 @@ export const cache: InMemoryCache = new InMemoryCache({
     }
   }
 });
-
-export const authModalsVar = makeVar(InitialAuthModalState);

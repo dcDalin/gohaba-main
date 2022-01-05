@@ -3,10 +3,9 @@ import { Popover, Transition } from '@headlessui/react';
 import Image from 'next/image';
 import React, { FC, Fragment } from 'react';
 import { BsChevronDown } from 'react-icons/bs';
-import { useDispatch, useSelector } from 'react-redux';
 
-import { logOut } from '@/redux/Authentication/authenticationSlice';
-import { AppState } from '@/redux/store';
+import useUserProfile from '@/hooks/useUserProfile';
+import { JWT } from '@/utils/environment';
 
 interface IProfileImageProps {
   photoURL: string;
@@ -20,18 +19,19 @@ const ProfileImage: FC<IProfileImageProps> = ({ photoURL }) => (
 const UserProfile: FC = () => {
   const client = useApolloClient();
 
-  const dispatch = useDispatch();
+  const {
+    data: {
+      UserProfile: { displayName, profilePictureUrl }
+    }
+  } = useUserProfile();
 
-  const handleSignOut = () => {
-    dispatch(logOut());
+  const handleSignOut = async () => {
+    localStorage.removeItem(JWT);
+    await client.refetchQueries({
+      include: ['GetUserProfile']
+    });
     client.clearStore();
   };
-
-  const {
-    auth: {
-      user: { displayName, profilePictureUrl }
-    }
-  } = useSelector((state: AppState) => state);
 
   return (
     <>
@@ -64,7 +64,7 @@ const UserProfile: FC = () => {
         >
           <Popover.Panel className="absolute z-10 px-4 mt-5 transform -translate-x-1/2 left-1/2">
             <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 w-28">
-              <button onClick={handleSignOut}>Logout</button>
+              <button onClick={() => handleSignOut()}>Logout</button>
             </div>
           </Popover.Panel>
         </Transition>

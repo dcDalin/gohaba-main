@@ -7,6 +7,7 @@ import merge from 'deepmerge';
 import fetch from 'isomorphic-unfetch';
 import isEqual from 'lodash/isEqual';
 import { useMemo } from 'react';
+import { toast } from 'react-toastify';
 import * as ws from 'ws';
 
 import { cache } from '@/lib/cache';
@@ -66,6 +67,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
     graphQLErrors.map(({ message, extensions }) => {
       console.log(`[GraphQL error]: Message: ${message}, Location: ${extensions.code}`);
+      return toast.error(message);
     });
   if (networkError) {
     console.log(`[Network error]: ${networkError}`);
