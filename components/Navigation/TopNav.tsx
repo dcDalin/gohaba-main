@@ -15,13 +15,11 @@ import useUserProfile from '@/hooks/useUserProfile';
 const TopNav: FC = () => {
   const router = useRouter();
 
-  const { data, loading, networkStatus, refetch } = useUserProfile();
+  const { data, loading, networkStatus } = useUserProfile();
 
   const handleRedirect = (path: string) => {
     router.push(path);
   };
-
-  console.log('Top nav refetch is: ', networkStatus);
 
   return (
     <>

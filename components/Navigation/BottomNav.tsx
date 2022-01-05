@@ -1,13 +1,12 @@
+import { NetworkStatus } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
-import { GrUserAdmin } from 'react-icons/gr';
 import { RiBusFill } from 'react-icons/ri';
 import { TiTicket } from 'react-icons/ti';
-import { useSelector } from 'react-redux';
 
 import NavMenuItem from '@/components/Navigation/NavMenuItem';
-import { ADMIN, EVENTS, TOURS } from '@/components/Navigation/paths';
-import { AppState } from '@/redux/store';
+import { EVENTS, TOURS } from '@/components/Navigation/paths';
+import useUserProfile from '@/hooks/useUserProfile';
 
 import SignInButton from './SignInButton';
 import UserProfile from './UserProfile';
@@ -15,11 +14,11 @@ import UserProfile from './UserProfile';
 const BottomNav: FC = () => {
   const router = useRouter();
 
+  const { data, loading, networkStatus } = useUserProfile();
+
   const handleRedirect = (path: string) => {
     router.push(path);
   };
-
-  const isSignedIn = false;
 
   return (
     <div className="shadow dark:bg-gray sm:block md:hidden w-full h-screen">
@@ -36,7 +35,13 @@ const BottomNav: FC = () => {
             onClick={() => handleRedirect(EVENTS)}
           />
 
-          {isSignedIn ? <UserProfile /> : <SignInButton />}
+          {loading || networkStatus === NetworkStatus.refetch ? (
+            <div>Loading...</div>
+          ) : !loading && data && data.UserProfile.success ? (
+            <UserProfile />
+          ) : (
+            <SignInButton />
+          )}
         </div>
       </section>
     </div>
