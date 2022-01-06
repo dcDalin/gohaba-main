@@ -2,16 +2,17 @@ import type { NextPage } from 'next';
 import { NextSeo } from 'next-seo';
 
 import AppLayout from '@/components/Layouts/AppLayout';
+import Profile from '@/components/Profile';
 
-const Profile: NextPage = () => {
+const ProfilePage: NextPage = () => {
   return (
     <>
       <NextSeo title="Profile" description="A short description goes here." />
       <AppLayout>
-        <p className="text-4xl">Profile page</p>
+        <Profile />
       </AppLayout>
     </>
   );
 };
 
-export default Profile;
+export default ProfilePage;

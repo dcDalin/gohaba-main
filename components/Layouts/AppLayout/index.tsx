@@ -19,7 +19,7 @@ const AppLayout: FC<IAppLayoutProps> = ({ children, admin = false }: IAppLayoutP
   return (
     <div>
       <Navigation />
-      <div className={`${admin ? '' : 'container mx-auto'} `}>{children}</div>
+      <div className={`${admin ? '' : 'container mx-auto p-2'} `}>{children}</div>
       <Footer />
     </div>
   );

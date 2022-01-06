@@ -1,36 +1,13 @@
 import { useApolloClient } from '@apollo/client';
 import { Popover, Transition } from '@headlessui/react';
-import Image from 'next/image';
 import router from 'next/router';
 import React, { FC, Fragment } from 'react';
 import { BsChevronDown } from 'react-icons/bs';
 
 import { PROFILE } from '@/components/Navigation/paths';
+import ProfileImage from '@/components/Shared/ProfileImage';
 import useUserProfile from '@/hooks/useUserProfile';
 import { JWT } from '@/utils/environment';
-
-interface IProfileImageProps {
-  photoURL: string;
-  handleClick?: () => void;
-}
-const ProfileImage: FC<IProfileImageProps> = ({ photoURL, handleClick }) => (
-  <div
-    className="rounded-full h-8 w-8 flex items-center justify-center border border-gray-100"
-    role="button"
-    tabIndex={0}
-    onClick={handleClick}
-    onKeyDown={handleClick}
-  >
-    <Image
-      src={`${photoURL}`}
-      alt="Picture of the author"
-      width={32}
-      height={32}
-      className="rounded-full"
-      priority={true}
-    />
-  </div>
-);
 
 const UserProfile: FC = () => {
   const client = useApolloClient();
