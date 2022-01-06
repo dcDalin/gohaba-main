@@ -1,11 +1,11 @@
 import { NetworkStatus } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
-import { RiBusFill } from 'react-icons/ri';
+import { RiBusFill, RiHome3Line } from 'react-icons/ri';
 import { TiTicket } from 'react-icons/ti';
 
 import NavMenuItem from '@/components/Navigation/NavMenuItem';
-import { EVENTS, TOURS } from '@/components/Navigation/paths';
+import { EVENTS, HOME, TOURS } from '@/components/Navigation/paths';
 import useUserProfile from '@/hooks/useUserProfile';
 
 import SignInButton from './SignInButton';
@@ -24,6 +24,11 @@ const BottomNav: FC = () => {
     <div className="shadow dark:bg-gray sm:block md:hidden w-full h-screen">
       <section className="block pt-2 px-4 fixed inset-x-0 bottom-0 z-50 bg-white shadow">
         <div id="tabs" className="flex justify-between items-center">
+          <NavMenuItem
+            icon={<RiHome3Line className="h-full w-full" />}
+            active={router.pathname === HOME}
+            onClick={() => handleRedirect(HOME)}
+          />
           <NavMenuItem
             icon={<RiBusFill className="h-full w-full" />}
             active={router.pathname === TOURS}

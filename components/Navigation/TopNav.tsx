@@ -24,13 +24,15 @@ const TopNav: FC = () => {
   return (
     <>
       <div className="shadow dark:bg-gray-800">
-        <div className="container mx-auto flex justify-between items-center">
-          <Link href="/">
-            <a className="px-0">goHaba</a>
-          </Link>
+        <div className="container w-full mx-auto flex items-center">
+          <div className="w-1/3">
+            <Link href="/">
+              <a className="px-0">goHaba</a>
+            </Link>
+          </div>
 
           {/* Desktop top menu */}
-          <div className="hidden md:flex">
+          <div className="hidden md:flex w-1/3 justify-center">
             <NavMenuItem
               title="Tours"
               icon={<RiBusFill className="h-full w-full" />}
@@ -44,7 +46,7 @@ const TopNav: FC = () => {
               onClick={() => handleRedirect(EVENTS)}
             />
           </div>
-          <div className="hidden md:flex">
+          <div className="hidden md:flex w-1/3 justify-end">
             {!loading && data && data.UserProfile.success ? (
               <UserProfile />
             ) : (

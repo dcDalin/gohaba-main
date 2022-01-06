@@ -1,17 +1,26 @@
 import { useApolloClient } from '@apollo/client';
 import { Popover, Transition } from '@headlessui/react';
 import Image from 'next/image';
+import router from 'next/router';
 import React, { FC, Fragment } from 'react';
 import { BsChevronDown } from 'react-icons/bs';
 
+import { PROFILE } from '@/components/Navigation/paths';
 import useUserProfile from '@/hooks/useUserProfile';
 import { JWT } from '@/utils/environment';
 
 interface IProfileImageProps {
   photoURL: string;
+  handleClick?: () => void;
 }
-const ProfileImage: FC<IProfileImageProps> = ({ photoURL }) => (
-  <div className="rounded-full h-8 w-8 flex items-center justify-center border border-gray-100">
+const ProfileImage: FC<IProfileImageProps> = ({ photoURL, handleClick }) => (
+  <div
+    className="rounded-full h-8 w-8 flex items-center justify-center border border-gray-100"
+    role="button"
+    tabIndex={0}
+    onClick={handleClick}
+    onKeyDown={handleClick}
+  >
     <Image
       src={`${photoURL}`}
       alt="Picture of the author"
@@ -40,14 +49,20 @@ const UserProfile: FC = () => {
     client.clearStore();
   };
 
+  const handleRedirect = (path: string) => {
+    router.push(path);
+  };
+
   return (
     <>
       {/* Display on mobile only */}
       <div className="flex md:hidden">
         <div
-          className={`px-1 mx-auto flex flex-col md:flex-row h-12 md:h-16 outline-none tracking-wide text-lg items-center hover:text-gray-600 hover:border-gray-600 hover:bg-gray-50 border-transparent hover:border-current focus:outline-none focus:text-gray-600 cursor-pointer`}
+          className={`px-1 mx-auto flex flex-col md:flex-row h-12 md:h-16 outline-none tracking-wide text-lg items-center hover:text-gray-600 hover:border-gray-600 hover:bg-gray-50 border-transparent hover:border-current focus:outline-none focus:text-gray-600 cursor-pointer ${
+            router.pathname === PROFILE && `border-gray-600 border-b-2`
+          }`}
         >
-          <ProfileImage photoURL={profilePictureUrl} />
+          <ProfileImage photoURL={profilePictureUrl} handleClick={() => handleRedirect(PROFILE)} />
         </div>
       </div>
 
