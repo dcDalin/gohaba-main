@@ -5,6 +5,7 @@ import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 import merge from 'deepmerge';
 import fetch from 'isomorphic-unfetch';
+import jwt_decode from 'jwt-decode';
 import isEqual from 'lodash/isEqual';
 import { useMemo } from 'react';
 import { toast } from 'react-toastify';
@@ -46,9 +47,22 @@ const authLink = setContext((_, { headers }) => {
   let authHeaders: { Authorization?: string; 'x-hasura-role'?: string };
 
   if (token) {
-    authHeaders = {
-      Authorization: `Bearer ${token}`
-    };
+    // check if token has expired
+    const decodedToken: any = jwt_decode(token);
+    const currentDate = new Date();
+
+    if (decodedToken.exp * 1000 < currentDate.getTime()) {
+      // remove expired token from local storage
+      localStorage.removeItem(JWT);
+
+      authHeaders = {
+        'x-hasura-role': 'anonymous'
+      };
+    } else {
+      authHeaders = {
+        Authorization: `Bearer ${token}`
+      };
+    }
   } else {
     authHeaders = {
       'x-hasura-role': 'anonymous'
