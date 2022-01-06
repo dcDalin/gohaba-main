@@ -11,13 +11,14 @@ interface IProfileImageProps {
   photoURL: string;
 }
 const ProfileImage: FC<IProfileImageProps> = ({ photoURL }) => (
-  <div className="rounded-full h-8 w-8 p-1 flex items-center justify-center border border-gray-100">
+  <div className="rounded-full h-8 w-8 flex items-center justify-center border border-gray-100">
     <Image
       src={`${photoURL}`}
       alt="Picture of the author"
       width={32}
       height={32}
       className="rounded-full"
+      priority={true}
     />
   </div>
 );

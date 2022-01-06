@@ -128,6 +128,7 @@ export const initializeApollo = (initialState: NormalizedCacheObject | null = nu
   return _apolloClient;
 };
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const apolloState = (client: ApolloClient<NormalizedCacheObject>, pageProps: any) => {
   if (pageProps?.props) {
     pageProps.props[APOLLO_STATE_PROP_NAME] = client.cache.extract();
@@ -136,7 +137,8 @@ export const apolloState = (client: ApolloClient<NormalizedCacheObject>, pagePro
   return pageProps;
 };
 
-export const useApollo = (pageProps: any) => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const useApollo = (pageProps: unknown) => {
   const state = pageProps[APOLLO_STATE_PROP_NAME];
   const store = useMemo(() => initializeApollo(state), [state]);
   return store;

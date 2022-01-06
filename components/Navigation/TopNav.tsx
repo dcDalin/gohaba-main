@@ -7,7 +7,7 @@ import { TiTicket } from 'react-icons/ti';
 
 import SignInModal from '@/components/Modal/SignInModal';
 import NavMenuItem from '@/components/Navigation/NavMenuItem';
-import { ADMIN, EVENTS, TOURS } from '@/components/Navigation/paths';
+import { EVENTS, TOURS } from '@/components/Navigation/paths';
 import SignInButton from '@/components/Navigation/SignInButton';
 import UserProfile from '@/components/Navigation/UserProfile';
 import useUserProfile from '@/hooks/useUserProfile';
@@ -45,12 +45,10 @@ const TopNav: FC = () => {
             />
           </div>
           <div className="hidden md:flex">
-            {loading || networkStatus === NetworkStatus.refetch ? (
-              <div>Loading...</div>
-            ) : !loading && data && data.UserProfile.success ? (
+            {!loading && data && data.UserProfile.success ? (
               <UserProfile />
             ) : (
-              <SignInButton />
+              <SignInButton loading={loading || networkStatus === NetworkStatus.refetch} />
             )}
           </div>
         </div>

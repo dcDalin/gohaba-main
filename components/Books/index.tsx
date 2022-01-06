@@ -1,4 +1,4 @@
-import { gql, useQuery, useReactiveVar } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import { FC } from 'react';
 
 const GET_REACTIVE_VARIABLE = gql`

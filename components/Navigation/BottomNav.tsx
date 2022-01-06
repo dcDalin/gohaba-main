@@ -22,7 +22,7 @@ const BottomNav: FC = () => {
 
   return (
     <div className="shadow dark:bg-gray sm:block md:hidden w-full h-screen">
-      <section className="block pt-2 fixed inset-x-0 bottom-0 z-50 bg-white shadow">
+      <section className="block pt-2 px-4 fixed inset-x-0 bottom-0 z-50 bg-white shadow">
         <div id="tabs" className="flex justify-between items-center">
           <NavMenuItem
             icon={<RiBusFill className="h-full w-full" />}
@@ -35,12 +35,10 @@ const BottomNav: FC = () => {
             onClick={() => handleRedirect(EVENTS)}
           />
 
-          {loading || networkStatus === NetworkStatus.refetch ? (
-            <div>Loading...</div>
-          ) : !loading && data && data.UserProfile.success ? (
+          {data && data.UserProfile.success ? (
             <UserProfile />
           ) : (
-            <SignInButton />
+            <SignInButton loading={loading || networkStatus === NetworkStatus.refetch} />
           )}
         </div>
       </section>
