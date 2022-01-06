@@ -5,7 +5,7 @@ import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 import merge from 'deepmerge';
 import fetch from 'isomorphic-unfetch';
-import jwt_decode from 'jwt-decode';
+import jwt_decode, { JwtPayload } from 'jwt-decode';
 import isEqual from 'lodash/isEqual';
 import { useMemo } from 'react';
 import { toast } from 'react-toastify';
@@ -48,7 +48,7 @@ const authLink = setContext((_, { headers }) => {
 
   if (token) {
     // check if token has expired
-    const decodedToken: any = jwt_decode(token);
+    const decodedToken = jwt_decode<JwtPayload>(token);
     const currentDate = new Date();
 
     if (decodedToken.exp * 1000 < currentDate.getTime()) {
