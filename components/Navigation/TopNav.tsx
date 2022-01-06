@@ -23,9 +23,9 @@ const TopNav: FC = () => {
 
   return (
     <>
-      <div className="shadow dark:bg-gray-800">
+      <div className="shadow dark:bg-gray-800 sticky top-0 z-50 bg-white">
         <div className="container w-full mx-auto flex items-center">
-          <div className="w-1/3">
+          <div className="w-full md:w-1/3 h-10 flex items-center justify-between p-4">
             <Link href="/">
               <a className="px-0">goHaba</a>
             </Link>

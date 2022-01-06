@@ -22,7 +22,7 @@ const NavMenuItem: FC<INavMenuItemProps> = ({
         className={`${
           loading && 'cursor-wait'
         } px-1 mx-auto flex flex-col md:flex-row h-12 md:h-16 outline-none tracking-wide text-lg items-center hover:text-gray-600 hover:border-gray-600 hover:bg-gray-50 border-transparent hover:border-current focus:outline-none focus:text-gray-600 cursor-pointer ${
-          active && `border-gray-600 border-b-2`
+          active ? `border-gray-600 border-b-2` : `border-b-2`
         }`}
         onClick={onClick}
         disabled={loading}
