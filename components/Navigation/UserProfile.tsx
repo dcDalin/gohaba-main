@@ -61,8 +61,10 @@ const UserProfile: FC = () => {
           leaveFrom="opacity-100 translate-y-0"
           leaveTo="opacity-0 translate-y-1"
         >
-          <Popover.Panel className="absolute z-10 px-4 mt-5 transform -translate-x-1/2 left-1/2">
-            <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 w-28">
+          <Popover.Panel className="absolute z-10 px-4 mt-5 transform -translate-x-1/2 left-2/3 bg-white">
+            <div className="flex flex-col overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 w-28">
+              <button onClick={() => handleRedirect(PROFILE)}>Profile</button>
+
               <button onClick={() => handleSignOut()}>Logout</button>
             </div>
           </Popover.Panel>
