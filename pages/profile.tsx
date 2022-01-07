@@ -3,6 +3,7 @@ import { NextSeo } from 'next-seo';
 
 import AppLayout from '@/components/Layouts/AppLayout';
 import Profile from '@/components/Profile';
+import WithUserAuth from '@/lib/WithUserAuth';
 
 const ProfilePage: NextPage = () => {
   return (
@@ -15,4 +16,4 @@ const ProfilePage: NextPage = () => {
   );
 };
 
-export default ProfilePage;
+export default WithUserAuth(ProfilePage);
